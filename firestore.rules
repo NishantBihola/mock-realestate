@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Leads: Only the system (or admin if implemented) should write, 
+    // but for this demo/prototype we allow creation from the client 
+    // if it follows the schema.
+    match /leads/{leadId} {
+      allow create: if isValidId(leadId) 
+        && request.resource.data.keys().hasAll(['name', 'budget', 'targetNeighborhood', 'createdAt'])
+        && request.resource.data.name is string
+        && request.resource.data.budget is string
+        && request.resource.data.targetNeighborhood is string;
+      
+      // Only admins can read/update (not implemented in auth yet, but keeping restricted)
+      allow read, update, delete: if false; 
+    }
+
+    // Properties: Publicly readable, writeable only by admin/system
+    match /properties/{propertyId} {
+      allow read: if true;
+      allow write: if false; // Only via backend/admin (simulated)
+    }
+  }
+}

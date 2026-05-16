@@ -1,0 +1,50 @@
+{
+  "entities": {
+    "Lead": {
+      "title": "Lead",
+      "description": "Captured lead information from the AI Chatbot",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "budget": { "type": "string" },
+        "timeframe": { "type": "string" },
+        "targetNeighborhood": { "type": "string" },
+        "propertyPreferences": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "budget", "targetNeighborhood", "createdAt"]
+    },
+    "Property": {
+      "title": "Property",
+      "description": "Luxury property listing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "address": { "type": "string" },
+        "price": { "type": "number" },
+        "bedrooms": { "type": "number" },
+        "bathrooms": { "type": "number" },
+        "description": { "type": "string" },
+        "mlsNumber": { "type": "string" },
+        "imageUrls": { "type": "array", "items": { "type": "string" } },
+        "locationTags": { "type": "array", "items": { "type": "string" } },
+        "neighborhood": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["address", "price", "imageUrls"]
+    }
+  },
+  "firestore": {
+    "/leads/{leadId}": {
+      "schema": "Lead",
+      "description": "Collection of captured leads"
+    },
+    "/properties/{propertyId}": {
+      "schema": "Property",
+      "description": "Collection of luxury properties"
+    }
+  }
+}
